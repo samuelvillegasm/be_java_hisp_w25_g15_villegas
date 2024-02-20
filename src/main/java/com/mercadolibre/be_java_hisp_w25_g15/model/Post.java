@@ -17,21 +17,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Post {
     static final AtomicInteger idGenerator = new AtomicInteger();
-    @JsonIgnore
+
     int id;
-    @JsonProperty("user_id")
-    int userId;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    User user;
     LocalDate date;
     Product product;
     int category;
     double price;
-    public Post(int user, LocalDate date, Product product, int category, double price) {
+    boolean has_promo;
+    double discount;
+
+    public Post(User user, LocalDate date, Product product, int category, double price, boolean has_promo, double discount) {
         this.id = idGenerator.incrementAndGet();
-        this.userId = user;
+        this.user = user;
         this.date = date;
         this.product = product;
         this.category = category;
         this.price = price;
+        this.has_promo = has_promo;
+        this.discount = discount;
     }
 }
