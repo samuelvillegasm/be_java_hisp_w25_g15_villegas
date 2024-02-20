@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "45306809-c34e-4329-8f4e-4696a5c2cd44",
-		"name": "Social App",
+		"_postman_id": "73192b3c-0c8d-4d37-8a4b-0a3fec63d2c7",
+		"name": "Social App Individual Samuel",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "32571298",
-		"_collection_link": "https://cloudy-crescent-702235.postman.co/workspace/CodeCommanders~c1df6ab4-3df0-464a-8206-1c59cb9847f5/collection/32571298-45306809-c34e-4329-8f4e-4696a5c2cd44?action=share&source=collection_link&creator=32571298"
+		"_collection_link": "https://cloudy-crescent-702235.postman.co/workspace/CodeCommanders~c1df6ab4-3df0-464a-8206-1c59cb9847f5/collection/32571298-73192b3c-0c8d-4d37-8a4b-0a3fec63d2c7?action=share&source=collection_link&creator=32571298"
 	},
 	"item": [
 		{
@@ -13,14 +13,14 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "{{host}}user/4/follow/3",
+					"raw": "{{host}}user/4/follow/2",
 					"host": [
 						"{{host}}user"
 					],
 					"path": [
 						"4",
 						"follow",
-						"3"
+						"2"
 					]
 				}
 			},
@@ -99,7 +99,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"user_id\": 2,\n    \"date\": \"31-04-2022\",\n    \"product\": {\n        \"product_id\": 1,\n        \"product_name\": \"Silla Gamer\",\n        \"type\": \"Gamer\",\n        \"brand\": \"Racer\",\n        \"color\": \"Red & Black\",\n        \"notes\": \"Special Edition\"\n    },\n    \"category\": 100,\n    \"price\": 1500.5\n}",
+					"raw": "{\n    \"user_id\": 2,\n    \"date\": \"10-02-2024\",\n    \"product\": {\n        \"product_id\": 1,\n        \"product_name\": \"Silla Gamer\",\n        \"type\": \"Gamer\",\n        \"brand\": \"Racer\",\n        \"color\": \"Red & Black\",\n        \"notes\": \"Special Edition\"\n    },  \n    \"category\": 100,\n    \"price\": 1500.5,\n    \"has_promo\": true,\n    \"discount\": 1\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -183,6 +183,38 @@
 						}
 					]
 				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get count post",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}products/promo-post/count?userId=1",
+					"host": [
+						"{{host}}products"
+					],
+					"path": [
+						"promo-post",
+						"count"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get promo post list",
+			"request": {
+				"method": "GET",
+				"header": []
 			},
 			"response": []
 		}
