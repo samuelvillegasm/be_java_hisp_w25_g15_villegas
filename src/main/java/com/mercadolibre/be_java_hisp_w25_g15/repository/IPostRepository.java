@@ -9,6 +9,6 @@ public interface IPostRepository {
     List<Post> findAllPostsBySellerIdBetweenDateRange(int sellerId, LocalDate startDate, LocalDate endDate);
     Post addPost(Post post);
 
-
+    List<Post> findByUserIdAndWithPromo(int userId);
 
 }
