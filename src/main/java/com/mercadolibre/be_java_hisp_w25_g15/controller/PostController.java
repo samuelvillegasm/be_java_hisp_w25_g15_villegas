@@ -4,6 +4,7 @@ import com.mercadolibre.be_java_hisp_w25_g15.dto.PostDto;
 import com.mercadolibre.be_java_hisp_w25_g15.dto.request.DateOrderEnumDto;
 import com.mercadolibre.be_java_hisp_w25_g15.dto.response.CountPromoProductDto;
 import com.mercadolibre.be_java_hisp_w25_g15.dto.response.PostGetListDto;
+import com.mercadolibre.be_java_hisp_w25_g15.dto.response.PostListDto;
 import com.mercadolibre.be_java_hisp_w25_g15.dto.response.PromoListDto;
 import com.mercadolibre.be_java_hisp_w25_g15.service.IPostService;
 import jakarta.validation.Valid;
@@ -15,14 +16,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-
 @RequestMapping("/products")
 public class PostController {
     private final IPostService iPostService;
 
 
     @PostMapping("/post")
-    ResponseEntity<PostDto> createPost(@RequestBody @Valid PostDto post){
+    ResponseEntity<PostListDto> createPost(@Valid @RequestBody PostDto post){
         return new ResponseEntity<>(iPostService.createPost(post), HttpStatus.OK);
     }
     @GetMapping("/followed/{userId}/list")
