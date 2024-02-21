@@ -1,7 +1,6 @@
 package com.mercadolibre.be_java_hisp_w25_g15.service.impl;
 
 import com.mercadolibre.be_java_hisp_w25_g15.dto.PostDto;
-import com.mercadolibre.be_java_hisp_w25_g15.dto.ProductDto;
 import com.mercadolibre.be_java_hisp_w25_g15.dto.request.DateOrderEnumDto;
 import com.mercadolibre.be_java_hisp_w25_g15.dto.response.CountPromoProductDto;
 import com.mercadolibre.be_java_hisp_w25_g15.dto.response.PostGetListDto;
@@ -19,8 +18,6 @@ import com.mercadolibre.be_java_hisp_w25_g15.repository.IUserRepository;
 import com.mercadolibre.be_java_hisp_w25_g15.service.IPostService;
 import com.mercadolibre.be_java_hisp_w25_g15.utils.ObjectMapperBean;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -39,7 +36,7 @@ public class PostService implements IPostService {
     private final ObjectMapperBean mapper;
 
     @Override
-    public PostDto createPost(PostDto postDto) {
+    public PostListDto createPost(PostDto postDto) {
         Optional<User> user = userRepository.getUserById(postDto.user_id());
         if (user.isEmpty())
             throw new NotFoundException("User not found");
@@ -49,17 +46,18 @@ public class PostService implements IPostService {
         //Creamos el producto
         Product newProduct = this.productRepository.save(mapper.getMapper().convertValue(postDto.product(), Product.class));
 
-        Post post = new Post(
-                user.get(),
-                LocalDate.parse(postDto.date(), DateTimeFormatter.ofPattern("dd-MM-yyyy")),
-                newProduct,
-                postDto.category(),
-                postDto.price(),
-                postDto.has_promo(),
-                postDto.discount()
-        );
+        Post post = Post.builder()
+                .user(user.get())
+                .date(LocalDate.parse(postDto.date(), DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .product(newProduct)
+                .category(postDto.category())
+                .price(postDto.price())
+                .has_promo(postDto.has_promo())
+                .discount(postDto.discount())
+                .build();
+
         Post newPost = this.postRepository.addPost(post);
-        return this.mapper.postToPostDto(newPost);
+        return this.mapper.postToPostListDto(newPost);
     }
 
 
@@ -70,11 +68,11 @@ public class PostService implements IPostService {
         if (user.getFollowed() == null || user.getFollowed().isEmpty()) {
             throw new NotFoundException("The user with id " + userId + " has no followed users");
         }
-        List<PostDto> postDtoList = new ArrayList<>();
+        List<PostListDto> postDtoList = new ArrayList<>();
         user.getFollowed().forEach(followedUser -> postDtoList.addAll(
                         this.postRepository.findAllPostsBySellerIdBetweenDateRange(
                                 followedUser.getId(), LocalDate.now().minusWeeks(2), LocalDate.now()
-                        ).stream().map(this.mapper::postToPostDto).toList()
+                        ).stream().map(this.mapper::postToPostListDto).toList()
                 )
         );
         if (postDtoList.isEmpty()) {
@@ -113,25 +111,16 @@ public class PostService implements IPostService {
         return new PromoListDto(
                 user.get().getId(),
                 user.get().getUsername(),
-                postWithPromoByUser.stream().map((p) -> new PostListDto(
-                        p.getUser().getId(),
-                        p.getId(),
-                        p.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
-                        p.getProduct(),
-                        p.getCategory(),
-                        p.getPrice(),
-                        p.isHas_promo(),
-                        p.getDiscount()
-                )).toList()
+                postWithPromoByUser.stream().map(this.mapper::postToPostListDto).toList()
         );
     }
 
-    private static void sortPostDtoListByDate(DateOrderEnumDto dateOrder, List<PostDto> postDtoList) {
+    private static void sortPostDtoListByDate(DateOrderEnumDto dateOrder, List<PostListDto> postDtoList) {
         if (dateOrder == null) return;
         Comparator<String> order = Comparator.reverseOrder();
         if (dateOrder == DateOrderEnumDto.DATE_ASC) {
             order = Comparator.naturalOrder();
         }
-        postDtoList.sort(Comparator.comparing(PostDto::date));
+        postDtoList.sort(Comparator.comparing(PostListDto::date));
     }
 }
